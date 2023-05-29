@@ -6,7 +6,7 @@
       Next player: <span class="uppercase">{{ next_player }}</span>
     </h1>
 
-    <ul class="my-5">
+    <ul class="my-5" style="width: 126px; display: flex; flex-wrap: wrap">
       <button
           v-for="(j, index) in boxes"
           :key="index"
@@ -57,9 +57,10 @@ export default {
       let winnedPlayer = ''
       for (let i = 0; i < this.combinations.length; i++) {
         const combination = this.combinations[i]
-        let wining = false
-        for (let j = 0; j< combination.length; j++) {
-          wining = this.boxes[]
+        if (this.boxes[combination[0]] === this.boxes[combination[1]] && this.boxes[combination[0]] && this.boxes[combination[2]]) {
+          isWin = true
+          winnedPlayer = this.boxes[combination[0]]
+          break
         }
       }
 
