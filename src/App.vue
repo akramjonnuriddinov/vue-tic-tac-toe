@@ -12,14 +12,14 @@
           :key="index"
           @click="clickButton(index)"
           :disabled="j.length || isSelect"
-          :class="{ 'bg-red-200': isSelect, 'cursor-not-allowed': isSelect }"
+          :class="{ 'bg-red-200': win, 'cursor-not-allowed': win }"
           class="flex items-center justify-center w-10 h-10 px-5 py-4 uppercase border hover:bg-gray-100 active:bg-gray-200 disabled:bg-red-50"
         >
           {{ j }}
         </button>
     </ul>
     <div>
-      <h2>Result: {{ win }} player won</h2>
+      <h2 v-if="win">Result: {{ win }} player won</h2>
     </div>
   </div>
 </template>
@@ -44,7 +44,6 @@ export default {
         [0, 4, 8],
         [2, 4, 6],
       ],
-      isSelect: false,
       flag: true
     }
   },
@@ -64,84 +63,13 @@ export default {
         }
       }
 
-      return isWin ? winnedPlayer : ''
+      return isWin ? winnedPlayer : false
     }
   },
   methods: {
     clickButton(index) {
       this.boxes[index] = this.active
       this.flag = !this.flag
-    },
-    winPlayer() {
-      // 1
-      if (
-        this.click_values[0][0] == this.click_values[0][1] &&
-        this.click_values[0][0] == this.click_values[0][2] &&
-        this.click_values[0][0] != ''
-      ) {
-        this.win = this.click_values[0][0]
-      }
-      // 2
-      if (
-        this.click_values[1][0] == this.click_values[1][1] &&
-        this.click_values[1][0] == this.click_values[1][2] &&
-        this.click_values[1][0] != ''
-      ) {
-        this.win = this.click_values[1][0]
-      }
-      // 3
-      if (
-        this.click_values[2][0] == this.click_values[2][1] &&
-        this.click_values[2][0] == this.click_values[2][2] &&
-        this.click_values[2][0] != ''
-      ) {
-        this.win = this.click_values[2][0]
-      }
-      // 4
-      if (
-        this.click_values[0][0] == this.click_values[1][1] &&
-        this.click_values[0][0] == this.click_values[2][2] &&
-        this.click_values[0][0] != ''
-      ) {
-        this.win = this.click_values[0][0]
-      }
-      // 5
-      if (
-        this.click_values[0][2] == this.click_values[1][1] &&
-        this.click_values[0][2] == this.click_values[2][0] &&
-        this.click_values[0][2] != ''
-      ) {
-        this.win = this.click_values[0][2]
-      }
-      // 6
-      if (
-        this.click_values[0][0] == this.click_values[1][0] &&
-        this.click_values[0][0] == this.click_values[2][0] &&
-        this.click_values[0][0] != ''
-      ) {
-        this.win = this.click_values[0][0]
-      }
-      // 7
-      if (
-        this.click_values[0][1] == this.click_values[1][1] &&
-        this.click_values[0][1] == this.click_values[2][1] &&
-        this.click_values[0][1] != ''
-      ) {
-        this.win = this.click_values[0][1]
-      }
-      // 8
-      if (
-        this.click_values[0][2] == this.click_values[1][2] &&
-        this.click_values[0][2] == this.click_values[2][2] &&
-        this.click_values[0][2] != ''
-      ) {
-        this.win = this.click_values[0][2]
-      }
-    },
-    isWin() {
-      if (this.win == 'x' || this.win == '0') {
-        this.isSelect = true
-      }
     }
   }
 }
