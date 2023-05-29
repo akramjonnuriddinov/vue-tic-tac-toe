@@ -7,22 +7,16 @@
     </h1>
 
     <ul class="my-5">
-      <li
-        class="flex flex-wrap"
-        v-for="(click_value, index) in click_values"
-        :key="index"
-      >
-        <button
-          v-for="(j, idx) in click_value"
-          :key="idx"
-          @click="clickButton(index, idx)"
+      <button
+          v-for="(j, index) in boxes"
+          :key="index"
+          @click="clickButton(index)"
           :disabled="j.length || isSelect"
           :class="{ 'bg-red-200': isSelect, 'cursor-not-allowed': isSelect }"
           class="flex items-center justify-center w-10 h-10 px-5 py-4 uppercase border hover:bg-gray-100 active:bg-gray-200 disabled:bg-red-50"
         >
           {{ j }}
         </button>
-      </li>
     </ul>
     <div>
       <h2>Result: {{ win }} player won</h2>
@@ -35,32 +29,47 @@ export default {
   name: 'App',
   data() {
     return {
-      click_values: [
-        ['', '', ''],
-        ['', '', ''],
-        ['', '', '']
+      boxes: [
+        '', '', '',
+        '', '', '',
+        '', '', ''
       ],
-      count: 0,
-      win: ' ',
-      next_player: 'x',
-      isSelect: false
+      combinations: [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+      ],
+      isSelect: false,
+      flag: true
+    }
+  },
+  computed: {
+    active () {
+      return this.flag ? 'X' : 'O'
+    },
+    win () {
+      let isWin = false
+      let winnedPlayer = ''
+      for (let i = 0; i < this.combinations.length; i++) {
+        const combination = this.combinations[i]
+        let wining = false
+        for (let j = 0; j< combination.length; j++) {
+          wining = this.boxes[]
+        }
+      }
+
+      return isWin ? winnedPlayer : ''
     }
   },
   methods: {
-    clickButton(i, j) {
-      if (this.count % 2 == 0) {
-        this.click_values[i][j] = 'x'
-        this.count++
-        this.next_player = '0'
-        this.winPlayer()
-        this.isWin()
-      } else {
-        this.click_values[i][j] = '0'
-        this.count++
-        this.next_player = 'x'
-        this.winPlayer()
-        this.isWin()
-      }
+    clickButton(index) {
+      this.boxes[index] = this.active
+      this.flag = !this.flag
     },
     winPlayer() {
       // 1
