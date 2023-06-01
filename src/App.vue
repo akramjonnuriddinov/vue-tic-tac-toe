@@ -3,7 +3,7 @@
     class="container max-w-sm p-5 mx-auto text-2xl font-medium rounded shadow"
   >
     <h1>
-      Next player: <span class="uppercase">{{ next_player }}</span>
+      Next player: <span class="uppercase">{{ active }}</span>
     </h1>
     <div class="flex items-start gap-10">
       <div class="my-5" style="width: 126px; display: flex; flex-wrap: wrap">
@@ -27,12 +27,12 @@
         </button>
         <div class="flex flex-wrap gap-2 w-[160px] py-1 text-sm">
           <button
-            v-for="(shag, index) in shags"
+            v-for="(step, index) in steps"
             :key="index"
             @click="route(index)"
             class="font-normal"
           >
-            shag#{{ index }}
+            shag#{{ index + 1 }}
           </button>
         </div>
       </div>
@@ -66,15 +66,14 @@ export default {
       flag: true,
       isSelect: false,
       shags: 0,
-      oldVal: [],
-      newVal: []
+      steps: []
     }
   },
   watch: {
     boxes: {
       deep: true,
-      handler(newValue, oldValue) {
-        console.log(`new value w: ${newValue} and old value w: ${oldValue}`)
+      handler (value) {
+        this.steps.push([...value])
       }
     }
   },
@@ -109,14 +108,12 @@ export default {
       this.shags++
     },
     restart() {
-      this.shags = 0
+      this.steps = []
       this.boxes = ['', '', '', '', '', '', '', '', '']
     },
     route(index) {
-      console.log(index)
-      this.boxes = this.oldVal
-      console.log('old: ', this.oldVal)
-      console.log('new: ', this.newVal)
+     this.boxes = this.steps[index]
+     this.steps = this.steps.filter(step => this.steps.indexOf(step) < index)
     }
   }
 }
