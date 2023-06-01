@@ -5,21 +5,44 @@
     <h1>
       Next player: <span class="uppercase">{{ next_player }}</span>
     </h1>
-
-    <ul class="my-5" style="width: 126px; display: flex; flex-wrap: wrap">
-      <button
-          v-for="(j, index) in boxes"
+    <div class="flex items-start gap-10">
+      <div class="my-5" style="width: 126px; display: flex; flex-wrap: wrap">
+        <button
+          v-for="(box, index) in boxes"
           :key="index"
           @click="clickButton(index)"
-          :disabled="j.length || isSelect"
+          :disabled="box.length || isSelect"
           :class="{ 'bg-red-200': win, 'cursor-not-allowed': win }"
           class="flex items-center justify-center w-10 h-10 px-5 py-4 uppercase border hover:bg-gray-100 active:bg-gray-200 disabled:bg-red-50"
         >
-          {{ j }}
+          {{ box }}
         </button>
-    </ul>
+      </div>
+      <div>
+        <button
+          class="px-3 py-1 ml-auto text-lg text-white bg-gray-600 rounded"
+          @click="restart"
+        >
+          Restart
+        </button>
+        <div class="flex flex-wrap gap-2 w-[160px] py-1 text-sm">
+          <button
+            v-for="(shag, index) in shags"
+            :key="index"
+            @click="route(index)"
+            class="font-normal"
+          >
+            shag#{{ index }}
+          </button>
+        </div>
+      </div>
+    </div>
     <div>
-      <h2 v-if="win">Result: {{ win }} player won</h2>
+      <h2 class="mb-2">
+        Result:
+        <span class="text-green-500" v-if="win">{{ win }}</span>
+        <span class="text-green-500" v-else>None</span> player won
+      </h2>
     </div>
   </div>
 </template>
@@ -29,11 +52,7 @@ export default {
   name: 'App',
   data() {
     return {
-      boxes: [
-        '', '', '',
-        '', '', '',
-        '', '', ''
-      ],
+      boxes: ['', '', '', '', '', '', '', '', ''],
       combinations: [
         [0, 1, 2],
         [3, 4, 5],
@@ -42,34 +61,62 @@ export default {
         [1, 4, 7],
         [2, 5, 8],
         [0, 4, 8],
-        [2, 4, 6],
+        [2, 4, 6]
       ],
-      flag: true
+      flag: true,
+      isSelect: false,
+      shags: 0,
+      oldVal: [],
+      newVal: []
+    }
+  },
+  watch: {
+    boxes: {
+      deep: true,
+      handler(newValue, oldValue) {
+        console.log(`new value w: ${newValue} and old value w: ${oldValue}`)
+      }
     }
   },
   computed: {
-    active () {
+    active() {
       return this.flag ? 'X' : 'O'
     },
-    win () {
+    win() {
       let isWin = false
       let winnedPlayer = ''
       for (let i = 0; i < this.combinations.length; i++) {
         const combination = this.combinations[i]
-        if (this.boxes[combination[0]] === this.boxes[combination[1]] && this.boxes[combination[0]] && this.boxes[combination[2]]) {
+        if (
+          this.boxes[combination[0]] === this.boxes[combination[1]] &&
+          this.boxes[combination[0]] == this.boxes[combination[2]]
+        ) {
           isWin = true
           winnedPlayer = this.boxes[combination[0]]
           break
         }
       }
-
       return isWin ? winnedPlayer : false
     }
   },
   methods: {
+    updateCounter() {
+      this.counter++
+    },
     clickButton(index) {
       this.boxes[index] = this.active
       this.flag = !this.flag
+      this.shags++
+    },
+    restart() {
+      this.shags = 0
+      this.boxes = ['', '', '', '', '', '', '', '', '']
+    },
+    route(index) {
+      console.log(index)
+      this.boxes = this.oldVal
+      console.log('old: ', this.oldVal)
+      console.log('new: ', this.newVal)
     }
   }
 }
