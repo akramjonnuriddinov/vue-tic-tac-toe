@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="container max-w-sm p-5 mx-auto text-2xl font-medium rounded shadow"
-  >
+  <div class="container max-w-sm p-5 mx-auto text-xl">
     <h1>
       Next player: <span class="uppercase">{{ active }}</span>
     </h1>
@@ -11,8 +9,11 @@
           v-for="(box, index) in boxes"
           :key="index"
           @click="clickButton(index)"
-          :disabled="box.length || isSelect"
-          :class="{ 'bg-red-200': win, 'cursor-not-allowed': win }"
+          :disabled="box.length"
+          :class="{
+            'bg-red-200': win,
+            'cursor-not-allowed': win
+          }"
           class="flex items-center justify-center w-10 h-10 px-5 py-4 uppercase border hover:bg-gray-100 active:bg-gray-200 disabled:bg-red-50"
         >
           {{ box }}
@@ -64,15 +65,14 @@ export default {
         [2, 4, 6]
       ],
       flag: true,
-      isSelect: false,
-      shags: 0,
-      steps: []
+      steps: [],
+      show: true
     }
   },
   watch: {
     boxes: {
       deep: true,
-      handler (value) {
+      handler(value) {
         this.steps.push([...value])
       }
     }
@@ -103,17 +103,18 @@ export default {
       this.counter++
     },
     clickButton(index) {
+      this.show = true
       this.boxes[index] = this.active
       this.flag = !this.flag
-      this.shags++
     },
     restart() {
       this.steps = []
       this.boxes = ['', '', '', '', '', '', '', '', '']
+      this.show = false
     },
     route(index) {
-     this.boxes = this.steps[index]
-     this.steps = this.steps.filter(step => this.steps.indexOf(step) < index)
+      this.boxes = this.steps[index]
+      this.steps = this.steps.filter((step) => this.steps.indexOf(step) < index)
     }
   }
 }
