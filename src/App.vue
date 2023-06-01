@@ -26,7 +26,10 @@
         >
           Restart
         </button>
-        <div class="flex flex-wrap gap-2 w-[160px] py-1 text-sm">
+        <div
+          v-if="steps.length"
+          class="flex flex-wrap gap-2 w-[160px] py-1 text-sm"
+        >
           <button
             v-for="(step, index) in steps"
             :key="index"
@@ -65,18 +68,17 @@ export default {
         [2, 4, 6]
       ],
       flag: true,
-      steps: [],
-      show: true
+      steps: []
     }
   },
-  watch: {
-    boxes: {
-      deep: true,
-      handler(value) {
-        this.steps.push([...value])
-      }
-    }
-  },
+  // watch: {
+  //   boxes: {
+  //     deep: true,
+  //     handler(value) {
+  //       this.steps.push([...value])
+  //     }
+  //   }
+  // },
   computed: {
     active() {
       return this.flag ? 'X' : 'O'
@@ -103,14 +105,13 @@ export default {
       this.counter++
     },
     clickButton(index) {
-      this.show = true
       this.boxes[index] = this.active
+      this.steps.push([...this.boxes])
       this.flag = !this.flag
     },
     restart() {
-      this.steps = []
       this.boxes = ['', '', '', '', '', '', '', '', '']
-      this.show = false
+      this.steps = []
     },
     route(index) {
       this.boxes = this.steps[index]
