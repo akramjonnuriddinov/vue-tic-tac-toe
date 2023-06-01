@@ -26,15 +26,12 @@
         >
           Restart
         </button>
-        <div
-          v-if="steps.length"
-          class="flex flex-wrap gap-2 w-[160px] py-1 text-sm"
-        >
+        <div class="flex flex-wrap gap-2 w-[160px] py-1 text-sm">
           <button
-            v-for="(step, index) in steps"
+            v-for="(step, index) in count"
             :key="index"
             @click="route(index)"
-            class="font-normal"
+            class="font-normal underline"
           >
             shag#{{ index + 1 }}
           </button>
@@ -68,7 +65,8 @@ export default {
         [2, 4, 6]
       ],
       flag: true,
-      steps: []
+      steps: [],
+      count: 0
     }
   },
   // watch: {
@@ -108,14 +106,18 @@ export default {
       this.boxes[index] = this.active
       this.steps.push([...this.boxes])
       this.flag = !this.flag
+      this.count++
     },
     restart() {
       this.boxes = ['', '', '', '', '', '', '', '', '']
       this.steps = []
+      this.flag = true
+      this.count = 0
     },
     route(index) {
       this.boxes = this.steps[index]
       this.steps = this.steps.filter((step) => this.steps.indexOf(step) < index)
+      this.count = index + 1
     }
   }
 }
