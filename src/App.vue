@@ -28,7 +28,7 @@
         </button>
         <div class="flex flex-wrap gap-2 w-[160px] py-1 text-sm">
           <button
-            v-for="(step, index) in count"
+            v-for="(_, index) in count"
             :key="index"
             @click="route(index)"
             class="font-normal underline"
@@ -88,7 +88,7 @@ export default {
         const combination = this.combinations[i]
         if (
           this.boxes[combination[0]] === this.boxes[combination[1]] &&
-          this.boxes[combination[0]] == this.boxes[combination[2]]
+          this.boxes[combination[0]] === this.boxes[combination[2]]
         ) {
           isWin = true
           winnedPlayer = this.boxes[combination[0]]
