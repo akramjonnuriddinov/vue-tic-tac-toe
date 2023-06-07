@@ -137,6 +137,9 @@ export default {
       this.restart()
     }
   },
+  mounted () {
+    this.createCombination(3)
+  },
   methods: {
     click(index) {
       this.boxes[this.game_size][index] = this.isActive
@@ -159,6 +162,50 @@ export default {
       }
 
       return boxes
+    },
+    createCombination (size) {
+      const combinations = []
+      let x = 0
+      for (let i = 0; i < size; i++) {
+        const combination = []
+        for (let j = 0; j< size; j++) {
+          combination.push(j + x)
+        }
+        combinations.push(combination)
+        x += size
+      }
+
+      for (let i = 0; i < size; i++) {
+        const combination = []
+        let y= 0
+        for (let j = 0; j< size; j++) {
+          combination.push(i + y)
+          y += size
+        }
+        combinations.push(combination)
+      }
+      const combination1 = []
+      for (let i = 0; i < size; i++) {
+        for (let j = 0; j< size; j++) {
+          if (i === j) {
+            console.log(i)
+            combination1.push((size + 1) * i)
+          }
+        }
+      }
+      combinations.push(combination1)
+
+      const combination2 = []
+      for (let i = 0; i < size; i++) {
+        for (let j = size - 1; j >=0 ; j--) {
+          if (i === j) {
+            combination2.push((size + 1) * i)
+          }
+        }
+      }
+      combinations.push(combination2)
+
+      console.log(combinations)
     }
   }
 }
