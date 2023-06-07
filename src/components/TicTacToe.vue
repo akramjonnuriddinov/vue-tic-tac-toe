@@ -17,10 +17,7 @@
     <div class="flex items-start justify-between">
       <ul
         class="flex flex-wrap border"
-        :class="{
-          'max-w-[122px]': game_size == 3,
-          'max-w-[162px]': game_size == 4
-        }"
+        :class="gameSizeClass"
       >
         <li v-for="(box, index) in boxes[game_size]" :key="index">
           <button
@@ -60,11 +57,10 @@ export default {
   data() {
     return {
       boxes: {
-        3: ['', '', '', '', '', '', '', '', ''],
-        4: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+        3: this.createBoxes(3),
+        4: this.createBoxes(4)
       },
       count: 0,
-      flag: true,
       combinations: {
         3: [
           [0, 1, 2],
@@ -93,12 +89,18 @@ export default {
       },
       steps: [],
       game_size: 3,
-      flags: []
     }
   },
   computed: {
-    isActive() {
-      return this.flag ? 'X' : 'O'
+    isActive () {
+     return this.steps.length % 2 === 0 ? 'X' : 'O'
+    },
+    gameSizeClass () {
+      const classes = {
+        3: 'max-w-[122px]',
+        4: 'max-w-[162px]'
+      }
+      return classes[this.game_size]
     },
     win() {
       let isWin = false
@@ -138,42 +140,25 @@ export default {
   methods: {
     click(index) {
       this.boxes[this.game_size][index] = this.isActive
-      this.flag = !this.flag
       this.steps.push([...this.boxes[this.game_size]])
-      this.flags.push(this.flag)
     },
     router(index) {
-      this.flag = this.flags[index]
       this.boxes[this.game_size] = [...this.steps[index]]
       this.steps = this.steps.filter(
         (step) => this.steps.indexOf(step) <= index
       )
     },
     restart() {
-      if (this.game_size == 3) {
-        this.boxes[this.game_size] = ['', '', '', '', '', '', '', '', '']
-      } else {
-        this.boxes[this.game_size] = [
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          ''
-        ]
-      }
+      this.boxes[this.game_size] = this.createBoxes(this.game_size)
       this.steps = []
-      this.flag = true
+    },
+    createBoxes (size) {
+      const boxes = []
+      for (let i = 0; i < size * size; i++) {
+        boxes[i] = ''
+      }
+
+      return boxes
     }
   }
 }
