@@ -43,7 +43,11 @@
     </div>
 
     <div class="flex gap-5 pt-5">
-      <div>Win: {{ win }}</div>
+      <div>
+        Win:
+        <span v-if="!win">None</span>
+        <span v-else>{{ win }}</span>
+      </div>
       <span>|</span>
       <button @click="restart">Restart</button>
     </div>
@@ -94,6 +98,7 @@ export default {
   watch: {
     game_size() {
       this.steps = []
+      this.restart()
     }
   },
   computed: {
@@ -137,7 +142,10 @@ export default {
     },
     router(index) {
       this.boxes[this.game_size] = this.steps[index]
-      this.steps = this.steps.filter((step) => this.steps.indexOf(step) < index)
+      this.steps = this.steps.filter(
+        (step) => this.steps.indexOf(step) <= index
+      )
+      console.log(this.boxes[this.game_size])
     },
     restart() {
       if (this.game_size == 3) {
