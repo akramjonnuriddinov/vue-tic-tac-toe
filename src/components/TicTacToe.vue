@@ -163,6 +163,7 @@ export default {
         ]
       }
       this.steps = []
+      this.flag = true
     }
   }
 }
