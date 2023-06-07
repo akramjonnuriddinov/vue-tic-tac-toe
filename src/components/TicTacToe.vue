@@ -92,13 +92,17 @@ export default {
         ]
       },
       steps: [],
-      game_size: 3
+      game_size: 3,
+      flags: []
     }
   },
   watch: {
     game_size() {
       this.steps = []
       this.restart()
+    },
+    steps(value) {
+      console.log(value)
     }
   },
   computed: {
@@ -139,13 +143,14 @@ export default {
       this.boxes[this.game_size][index] = this.isActive
       this.flag = !this.flag
       this.steps.push([...this.boxes[this.game_size]])
+      this.flags.push(this.flag)
     },
     router(index) {
+      this.flag = this.flags[index]
       this.boxes[this.game_size] = this.steps[index]
       this.steps = this.steps.filter(
         (step) => this.steps.indexOf(step) <= index
       )
-      console.log(this.boxes[this.game_size])
     },
     restart() {
       if (this.game_size == 3) {
