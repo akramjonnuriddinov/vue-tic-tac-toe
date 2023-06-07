@@ -21,7 +21,7 @@
       >
         <li v-for="(box, index) in boxes[game_size]" :key="index">
           <button
-            :disabled="box.length || disabledBtn"
+            :disabled="win"
             @click="click(index)"
             :class="{ 'bg-red-50': win }"
             class="flex items-center justify-center w-10 h-10 text-xl border disabled:bg-gray-100"
@@ -61,32 +61,7 @@ export default {
         4: this.createBoxes(4)
       },
       count: 0,
-      combinations: {
-        3: [
-          [0, 1, 2],
-          [3, 4, 5],
-          [6, 7, 8],
-          [0, 4, 8],
-          [2, 4, 6],
-          [0, 3, 6],
-          [1, 4, 7],
-          [2, 5, 8]
-        ],
-        4: [
-          [0, 1, 2, 3],
-          [4, 5, 6, 7],
-          [8, 9, 10, 11],
-          [12, 13, 14, 15],
-
-          [0, 5, 10, 15],
-          [3, 6, 9, 12],
-
-          [0, 4, 8, 12],
-          [1, 5, 9, 13],
-          [2, 6, 10, 14],
-          [3, 7, 11, 15]
-        ]
-      },
+      combinations: [],
       steps: [],
       game_size: 3,
     }
@@ -105,8 +80,8 @@ export default {
     win() {
       let isWin = false
       let winnedPlayer = false
-      for (let i = 0; i < this.combinations[this.game_size].length; i++) {
-        const combination = this.combinations[this.game_size][i]
+      for (let i = 0; i < this.combinations.length; i++) {
+        const combination = this.combinations[i]
         let checkWin = true
         for (let j = 0; j < combination.length; j++) {
           if (
@@ -132,13 +107,14 @@ export default {
     }
   },
   watch: {
-    game_size() {
+    async game_size() {
+      this.combinations = await this.createCombination(this.game_size)
       this.steps = []
       this.restart()
     }
   },
-  mounted () {
-    this.createCombination(3)
+  async mounted () {
+   this.combinations = await this.createCombination(this.game_size)
   },
   methods: {
     click(index) {
@@ -151,7 +127,9 @@ export default {
         (step) => this.steps.indexOf(step) <= index
       )
     },
-    restart() {
+    async restart() {
+      this.combinations = await this.createCombination(this.game_size)
+      console.log(this.combinations)
       this.boxes[this.game_size] = this.createBoxes(this.game_size)
       this.steps = []
     },
@@ -188,7 +166,6 @@ export default {
       for (let i = 0; i < size; i++) {
         for (let j = 0; j< size; j++) {
           if (i === j) {
-            console.log(i)
             combination1.push((size + 1) * i)
           }
         }
@@ -197,15 +174,15 @@ export default {
 
       const combination2 = []
       for (let i = 0; i < size; i++) {
-        for (let j = size - 1; j >=0 ; j--) {
-          if (i === j) {
-            combination2.push((size + 1) * i)
+        for (let j = 0; j< size; j++) {
+          if ((i + j) === size -1 ) {
+            combination2.push((size - j) * (size - 1))
           }
         }
       }
       combinations.push(combination2)
 
-      console.log(combinations)
+     return [...combinations]
     }
   }
 }
