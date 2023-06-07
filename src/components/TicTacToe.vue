@@ -3,11 +3,23 @@
     <div class="flex gap-10">
       <label for="x3">
         3x
-        <input value="3" v-model="game_size" id="x3" type="radio" name="game" />
+        <input
+          :value="3"
+          v-model="game_size"
+          id="x3"
+          type="radio"
+          name="game"
+        />
       </label>
       <label for="x4">
         4x
-        <input value="4" v-model="game_size" id="x4" type="radio" name="game" />
+        <input
+          :value="4"
+          v-model="game_size"
+          id="x4"
+          type="radio"
+          name="game"
+        />
       </label>
       <div>Game size: {{ game_size }}</div>
     </div>
@@ -15,10 +27,7 @@
     <p>Next player: {{ isActive }}</p>
 
     <div class="flex items-start justify-between">
-      <ul
-        class="flex flex-wrap border"
-        :class="gameSizeClass"
-      >
+      <ul class="flex flex-wrap border" :class="gameSizeClass">
         <li v-for="(box, index) in boxes[game_size]" :key="index">
           <button
             :disabled="win"
@@ -58,22 +67,24 @@ export default {
     return {
       boxes: {
         3: this.createBoxes(3),
-        4: this.createBoxes(4)
+        4: this.createBoxes(4),
+        5: this.createBoxes(5)
       },
       count: 0,
       combinations: [],
       steps: [],
-      game_size: 3,
+      game_size: 5
     }
   },
   computed: {
-    isActive () {
-     return this.steps.length % 2 === 0 ? 'X' : 'O'
+    isActive() {
+      return this.steps.length % 2 === 0 ? 'X' : 'O'
     },
-    gameSizeClass () {
+    gameSizeClass() {
       const classes = {
         3: 'max-w-[122px]',
-        4: 'max-w-[162px]'
+        4: 'max-w-[162px]',
+        5: 'max-w-[202px]'
       }
       return classes[this.game_size]
     },
@@ -107,14 +118,15 @@ export default {
     }
   },
   watch: {
-    async game_size() {
+    async game_size(value) {
       this.combinations = await this.createCombination(this.game_size)
       this.steps = []
       this.restart()
+      console.log(typeof value)
     }
   },
-  async mounted () {
-   this.combinations = await this.createCombination(this.game_size)
+  async mounted() {
+    this.combinations = await this.createCombination(this.game_size)
   },
   methods: {
     click(index) {
@@ -133,7 +145,7 @@ export default {
       this.boxes[this.game_size] = this.createBoxes(this.game_size)
       this.steps = []
     },
-    createBoxes (size) {
+    createBoxes(size) {
       const boxes = []
       for (let i = 0; i < size * size; i++) {
         boxes[i] = ''
@@ -141,12 +153,13 @@ export default {
 
       return boxes
     },
-    createCombination (size) {
+    createCombination(size) {
       const combinations = []
-      let x = 0
+      let x = Number(0)
       for (let i = 0; i < size; i++) {
         const combination = []
-        for (let j = 0; j< size; j++) {
+        for (let j = 0; j < size; j++) {
+          // console.log(j, i, Number(x), typeof size)
           combination.push(j + x)
         }
         combinations.push(combination)
@@ -155,8 +168,8 @@ export default {
 
       for (let i = 0; i < size; i++) {
         const combination = []
-        let y= 0
-        for (let j = 0; j< size; j++) {
+        let y = 0
+        for (let j = 0; j < size; j++) {
           combination.push(i + y)
           y += size
         }
@@ -164,7 +177,7 @@ export default {
       }
       const combination1 = []
       for (let i = 0; i < size; i++) {
-        for (let j = 0; j< size; j++) {
+        for (let j = 0; j < size; j++) {
           if (i === j) {
             combination1.push((size + 1) * i)
           }
@@ -174,15 +187,15 @@ export default {
 
       const combination2 = []
       for (let i = 0; i < size; i++) {
-        for (let j = 0; j< size; j++) {
-          if ((i + j) === size -1 ) {
+        for (let j = 0; j < size; j++) {
+          if (i + j === size - 1) {
             combination2.push((size - j) * (size - 1))
           }
         }
       }
       combinations.push(combination2)
-
-     return [...combinations]
+      console.log(combinations)
+      return [...combinations]
     }
   }
 }
