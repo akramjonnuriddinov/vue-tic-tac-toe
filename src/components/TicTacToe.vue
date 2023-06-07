@@ -96,15 +96,6 @@ export default {
       flags: []
     }
   },
-  watch: {
-    game_size() {
-      this.steps = []
-      this.restart()
-    },
-    steps(value) {
-      console.log(value)
-    }
-  },
   computed: {
     isActive() {
       return this.flag ? 'X' : 'O'
@@ -138,6 +129,12 @@ export default {
       return true
     }
   },
+  watch: {
+    game_size() {
+      this.steps = []
+      this.restart()
+    }
+  },
   methods: {
     click(index) {
       this.boxes[this.game_size][index] = this.isActive
@@ -147,7 +144,7 @@ export default {
     },
     router(index) {
       this.flag = this.flags[index]
-      this.boxes[this.game_size] = this.steps[index]
+      this.boxes[this.game_size] = [...this.steps[index]]
       this.steps = this.steps.filter(
         (step) => this.steps.indexOf(step) <= index
       )
