@@ -86,7 +86,7 @@ export default {
       return this.steps.length % 2 === 0 ? 'X' : 'O'
     },
     gameSizeClass() {
-      const size = this.game_size * 40 + 2
+      const size = this.game_size * 40 + 2 || 'max-w-[122px]'
       return 'max-w-' + '[' + size + 'px]'
     },
     win() {
