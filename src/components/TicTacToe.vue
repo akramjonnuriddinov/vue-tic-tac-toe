@@ -21,6 +21,16 @@
           name="game"
         />
       </label>
+      <label for="x5">
+        5x
+        <input
+          :value="5"
+          v-model="game_size"
+          id="x5"
+          type="radio"
+          name="game"
+        />
+      </label>
       <div>Game size: {{ game_size }}</div>
     </div>
 
@@ -28,11 +38,10 @@
 
     <div class="flex items-start justify-between">
       <ul class="flex flex-wrap border" :class="gameSizeClass">
-        <li v-for="(box, index) in boxes[game_size]" :key="index">
+        <li v-for="(box, index) in boxes" :key="index">
           <button
-            :disabled="win"
+            :disabled="box.length || win"
             @click="click(index)"
-            :class="{ 'bg-red-50': win }"
             class="flex items-center justify-center w-10 h-10 text-xl border disabled:bg-gray-100"
           >
             {{ box }}
@@ -65,15 +74,11 @@ export default {
   name: 'TicTacToe',
   data() {
     return {
-      boxes: {
-        3: this.createBoxes(3),
-        4: this.createBoxes(4),
-        5: this.createBoxes(5)
-      },
+      game_size: 3,
+      boxes: this.createBoxes(3),
       count: 0,
       combinations: [],
-      steps: [],
-      game_size: 5
+      steps: []
     }
   },
   computed: {
@@ -81,12 +86,8 @@ export default {
       return this.steps.length % 2 === 0 ? 'X' : 'O'
     },
     gameSizeClass() {
-      const classes = {
-        3: 'max-w-[122px]',
-        4: 'max-w-[162px]',
-        5: 'max-w-[202px]'
-      }
-      return classes[this.game_size]
+      const size = this.game_size * 40 + 2
+      return 'max-w-' + '[' + size + 'px]'
     },
     win() {
       let isWin = false
@@ -95,16 +96,13 @@ export default {
         const combination = this.combinations[i]
         let checkWin = true
         for (let j = 0; j < combination.length; j++) {
-          if (
-            this.boxes[this.game_size][combination[0]] !==
-            this.boxes[this.game_size][combination[j]]
-          ) {
+          if (this.boxes[combination[0]] !== this.boxes[combination[j]]) {
             checkWin = false
           }
         }
-        if (checkWin && this.boxes[this.game_size][combination[0]] !== '') {
+        if (checkWin && this.boxes[combination[0]] !== '') {
           isWin = true
-          winnedPlayer = this.boxes[this.game_size][combination[0]]
+          winnedPlayer = this.boxes[combination[0]]
           break
         }
       }
@@ -118,11 +116,10 @@ export default {
     }
   },
   watch: {
-    async game_size(value) {
+    async game_size() {
       this.combinations = await this.createCombination(this.game_size)
       this.steps = []
       this.restart()
-      console.log(typeof value)
     }
   },
   async mounted() {
@@ -130,19 +127,18 @@ export default {
   },
   methods: {
     click(index) {
-      this.boxes[this.game_size][index] = this.isActive
-      this.steps.push([...this.boxes[this.game_size]])
+      this.boxes[index] = this.isActive
+      this.steps.push([...this.boxes])
     },
     router(index) {
-      this.boxes[this.game_size] = [...this.steps[index]]
+      this.boxes = [...this.steps[index]]
       this.steps = this.steps.filter(
         (step) => this.steps.indexOf(step) <= index
       )
     },
     async restart() {
       this.combinations = await this.createCombination(this.game_size)
-      console.log(this.combinations)
-      this.boxes[this.game_size] = this.createBoxes(this.game_size)
+      this.boxes = this.createBoxes(this.game_size)
       this.steps = []
     },
     createBoxes(size) {
@@ -159,7 +155,6 @@ export default {
       for (let i = 0; i < size; i++) {
         const combination = []
         for (let j = 0; j < size; j++) {
-          // console.log(j, i, Number(x), typeof size)
           combination.push(j + x)
         }
         combinations.push(combination)
@@ -194,7 +189,6 @@ export default {
         }
       }
       combinations.push(combination2)
-      console.log(combinations)
       return [...combinations]
     }
   }
