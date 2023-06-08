@@ -37,7 +37,7 @@
     <p>Next player: {{ isActive }}</p>
 
     <div class="flex items-start justify-between">
-      <ul class="flex flex-wrap border" :class="gameSizeClass">
+      <ul class="flex flex-wrap border" :style="gameSizeClass">
         <li v-for="(box, index) in boxes" :key="index">
           <button
             :disabled="box.length || win"
@@ -86,8 +86,8 @@ export default {
       return this.steps.length % 2 === 0 ? 'X' : 'O'
     },
     gameSizeClass() {
-      const size = this.game_size * 40 + 2 || 'max-w-[122px]'
-      return 'max-w-' + '[' + size + 'px]'
+      const size = this.game_size * 40 + 2
+      return 'max-width:' + +size + 'px'
     },
     win() {
       let isWin = false
