@@ -1,43 +1,23 @@
 <template>
   <div class="container max-w-md px-5 py-5 mx-auto text-xl">
-    <div class="flex gap-10">
-      <label for="x3">
-        3x
-        <input
-          :value="3"
-          v-model="game_size"
-          id="x3"
-          type="radio"
-          name="game"
-        />
-      </label>
-      <label for="x4">
-        4x
-        <input
-          :value="4"
-          v-model="game_size"
-          id="x4"
-          type="radio"
-          name="game"
-        />
-      </label>
-      <label for="x5">
-        5x
-        <input
-          :value="5"
-          v-model="game_size"
-          id="x5"
-          type="radio"
-          name="game"
-        />
-      </label>
-      <div>Game size: {{ game_size }}</div>
+    <div class="flex items-center gap-4 pb-3">
+      <select
+        v-model="game_size"
+        id="game_size"
+        class="max-w-[55px] text-gray-900 text-sm rounded block w-full p-1 border-gray-100 border outline-none cursor-pointer placeholder-gray-400"
+      >
+        <option :value="3">3</option>
+        <option :value="4">4</option>
+        <option :value="5">5</option>
+        <option :value="6">6</option>
+      </select>
+      <p class="px-5 text-white bg-gray-600 border border-gray-100 rounded">
+        {{ isActive }}
+      </p>
     </div>
 
-    <p>Next player: {{ isActive }}</p>
-
     <div class="flex items-start justify-between">
-      <ul class="flex flex-wrap border" :style="gameSizeClass">
+      <ul class="flex flex-wrap border rounded-md" :style="gameSizeClass">
         <li v-for="(box, index) in boxes" :key="index">
           <button
             :disabled="box.length || win"
@@ -60,11 +40,16 @@
     <div class="flex gap-5 pt-5">
       <div>
         Win:
-        <span v-if="!win">None</span>
+        <span v-if="!win">Playing</span>
         <span v-else>{{ win }}</span>
       </div>
       <span>|</span>
-      <button @click="restart">Restart</button>
+      <button
+        class="px-5 border border-gray-100 rounded shadow"
+        @click="restart"
+      >
+        Restart
+      </button>
     </div>
   </div>
 </template>
@@ -78,7 +63,8 @@ export default {
       boxes: this.createBoxes(3),
       count: 0,
       combinations: [],
-      steps: []
+      steps: [],
+      selected: 'null'
     }
   },
   computed: {
